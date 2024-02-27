@@ -1,0 +1,39 @@
+# pgadmin4 deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin4
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgadmin4
+  template:
+    metadata:
+      labels:
+        app: pgadmin4
+    spec:
+      containers:
+      - name: pgadmin4
+        image: dpage/pgadmin4:latest  # Use the appropriate pgAdmin4 Docker image
+        ports:
+        - containerPort: 80
+        env:
+        - name: PGADMIN_DEFAULT_EMAIL
+          value: "nazmul.devops@gmail.com"  # Set your desired email
+        - name: PGADMIN_DEFAULT_PASSWORD
+          value: "nazmul"  # Set your desired password
+---
+# pgadmin4 nodeport service
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgadmin4-service
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 30000  # Choose a suitable NodePort value
+  selector:
+    app: pgadmin4
